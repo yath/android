@@ -28,11 +28,11 @@ grep -q '[^ ]* /system [^ ]* rw' /proc/mounts && isrw=1
 
 grep -vF "$IPADDR" /etc/hosts > /etc/hosts.new
 
-{ wget -O- "$URL" | grep "^[0-9]" >> /etc/hosts.new; } 2>&1
-
 for host in $ALSO; do
     echo "$IPADDR $host" >> /etc/hosts.new
 done
+
+{ wget -O- "$URL" | grep "^[0-9]" >> /etc/hosts.new; } 2>&1
 
 cp /etc/hosts.new /etc/hosts && rm /etc/hosts.new
 
