@@ -35,7 +35,8 @@ is_rw() {
     awk '$2 == "/system" && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
 }
 
-is_rw || mount /system -o remount,rw
+REMOUNTED=0
+is_rw || { mount /system -o remount,rw; REMOUNTED=1; }
 
 # better be safe than sorry...
 is_rw || { echo "Unable to gain write access to /system, aborting" >&2; exit 1; }
@@ -62,6 +63,7 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
     echo "### ADFREE DATA END ###" >> "$HOSTFILE"
 fi
 
-is_rw && mount /system -o remount,ro
+# mount /system read-only if it was at the beginning
+[ "$REMOUNTED" -eq 1 ] && mount /system -o remount,ro
 
 echo "done."
