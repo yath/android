@@ -17,6 +17,8 @@ IPADDR="127.0.0.99"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
 ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com"
 
+HOSTFILE=${1:-/etc/hosts}
+
 #################################################
 set -e
 
@@ -31,15 +33,19 @@ is_rw || mount /system -o remount,rw
 # better be safe than sorry...
 is_rw || { echo "Unable to gain write access to /system, aborting" >&2; exit 1; }
 
-grep -vF "$IPADDR" /etc/hosts > /etc/hosts.new
+# remove old adfree entries
+sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
+
+# print new ADFREE header
+echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
 
 for host in $ALSO; do
-    echo "$IPADDR $host" >> /etc/hosts.new
+    echo "$IPADDR $host" >> "$HOSTFILE"
 done
 
-{ wget -O- "$URL" | grep "^[0-9]" >> /etc/hosts.new; } 2>&1
+{ wget -O- "$URL" >> "$HOSTFILE"; } 2>&1
 
-cp /etc/hosts.new /etc/hosts && rm /etc/hosts.new
+echo "### ADFREE DATA END ###" >> "$HOSTFILE"
 
 is_rw && mount /system -o remount,ro
 
