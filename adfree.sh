@@ -17,6 +17,13 @@ IPADDR="127.0.0.99"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
 ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com"
 
+REMOVE_ONLY=0
+
+if [ "$1" = "remove" ]; then
+    REMOVE_ONLY=1
+    shift
+fi
+
 HOSTFILE=${1:-/etc/hosts}
 
 #################################################
@@ -34,18 +41,22 @@ is_rw || mount /system -o remount,rw
 is_rw || { echo "Unable to gain write access to /system, aborting" >&2; exit 1; }
 
 # remove old adfree entries
+echo "Removing ADFREE entries from $HOSTFILE"
 sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
 
-# print new ADFREE header
-echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
+if [ "$REMOVE_ONLY" -ne 1 ]; then
+    # print new ADFREE header
+    echo "Adding new ADFREE entries to $HOSTFILE"
+    echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
 
-for host in $ALSO; do
-    echo "$IPADDR $host" >> "$HOSTFILE"
-done
+    for host in $ALSO; do
+        echo "$IPADDR $host" >> "$HOSTFILE"
+    done
 
-{ wget -O- "$URL" >> "$HOSTFILE"; } 2>&1
+    { wget -O- "$URL" >> "$HOSTFILE"; } 2>&1
 
-echo "### ADFREE DATA END ###" >> "$HOSTFILE"
+    echo "### ADFREE DATA END ###" >> "$HOSTFILE"
+fi
 
 is_rw && mount /system -o remount,ro
 
