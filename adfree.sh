@@ -48,10 +48,14 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
     # print new ADFREE header
     echo "Adding new ADFREE entries to $HOSTFILE"
     echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
+    echo -n "# last adfree run: " >> "$HOSTFILE"
+    date >> "$HOSTFILE"
+    echo "" >> "$HOSTFILE"
 
     for host in $ALSO; do
         echo "$IPADDR $host" >> "$HOSTFILE"
     done
+    echo -e "\n# entries retrieved from $URL" >> "$HOSTFILE"
 
     { wget -O- "$URL" >> "$HOSTFILE"; } 2>&1
 
