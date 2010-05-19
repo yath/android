@@ -22,9 +22,14 @@ set -e
 
 echo "starting..."
 
-grep -q '[^ ]* /system [^ ]* rw' /proc/mounts && isrw=1
+is_rw() {
+    awk '$2 == "/system" && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
+}
 
-[ -z "$isrw" ] && mount /system -o remount,rw
+is_rw || mount /system -o remount,rw
+
+# better be safe than sorry...
+is_rw || { echo "Unable to gain write access to /system, aborting" >&2; exit 1; }
 
 grep -vF "$IPADDR" /etc/hosts > /etc/hosts.new
 
@@ -36,6 +41,6 @@ done
 
 cp /etc/hosts.new /etc/hosts && rm /etc/hosts.new
 
-[ -z "$isrw" ] && mount /system -o remount,ro
+is_rw && mount /system -o remount,ro
 
 echo "done."
