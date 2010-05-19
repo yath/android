@@ -48,9 +48,9 @@ echo "Removing ADFREE entries from $HOSTFILE"
 sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
 
 if [ "$REMOVE_ONLY" -ne 1 ]; then
-    # print new ADFREE header
     echo "Adding new ADFREE entries to $HOSTFILE"
     {
+        # print new ADFREE header
         echo "### ADFREE DATA BEGIN ###"
         echo "# last adfree v$VERSION run: $(date)"
 
