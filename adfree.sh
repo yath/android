@@ -10,7 +10,7 @@
 #
 # -- Sebastian Schmidt <yath@yath.de>, 1261118200 seconds from epoch
 #
-# With some improvements from The_Compiler, thanks!
+# With improvements from The_Compiler and tommie, thanks!
 
 
 IPADDR="127.0.0.99"
