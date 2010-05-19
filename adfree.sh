@@ -49,9 +49,7 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
     # print new ADFREE header
     echo "Adding new ADFREE entries to $HOSTFILE"
     echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
-    echo -n "# last adfree run: " >> "$HOSTFILE"
-    date >> "$HOSTFILE"
-    echo "" >> "$HOSTFILE"
+    echo "# last adfree run: $(date)" >> "$HOSTFILE"
 
     for host in $ALSO; do
         echo "$IPADDR $host" >> "$HOSTFILE"
