@@ -50,17 +50,20 @@ sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
 if [ "$REMOVE_ONLY" -ne 1 ]; then
     # print new ADFREE header
     echo "Adding new ADFREE entries to $HOSTFILE"
-    echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
-    echo "# last adfree v$VERSION run: $(date)" >> "$HOSTFILE"
+    {
+        echo "### ADFREE DATA BEGIN ###"
+        echo "# last adfree v$VERSION run: $(date)"
 
-    for host in $ALSO; do
-        echo "$IPADDR $host" >> "$HOSTFILE"
-    done
-    echo -e "\n# entries retrieved from $URL" >> "$HOSTFILE"
+        for host in $ALSO; do
+            echo "$IPADDR $host"
+        done
 
-    { wget -O- "$URL" >> "$HOSTFILE"; } 2>&1
+        echo -e "\n# entries retrieved from $URL"
 
-    echo "### ADFREE DATA END ###" >> "$HOSTFILE"
+        wget -O- "$URL" 2>&3
+
+        echo "### ADFREE DATA END ###"
+    } 3>&1 >> "$HOSTFILE"
 fi
 
 # mount /system read-only if it was at the beginning
