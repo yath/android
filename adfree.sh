@@ -17,6 +17,8 @@ IPADDR="127.0.0.99"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
 ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com"
 
+VERSION="0.23"
+
 REMOVE_ONLY=0
 
 if [ "$1" = "remove" ]; then
@@ -29,7 +31,7 @@ HOSTFILE=${1:-/etc/hosts}
 #################################################
 set -e
 
-echo "starting..."
+echo "starting adfree v${VERSION}..."
 
 is_rw() {
     awk '$2 == "/system" && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
@@ -49,7 +51,7 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
     # print new ADFREE header
     echo "Adding new ADFREE entries to $HOSTFILE"
     echo "### ADFREE DATA BEGIN ###" >> "$HOSTFILE"
-    echo "# last adfree run: $(date)" >> "$HOSTFILE"
+    echo "# last adfree v$VERSION run: $(date)" >> "$HOSTFILE"
 
     for host in $ALSO; do
         echo "$IPADDR $host" >> "$HOSTFILE"
