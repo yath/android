@@ -28,8 +28,11 @@ fi
 
 HOSTFILE=${1:-/etc/hosts}
 
+B="busybox"
+
 # detect mountpoint of the host file
-ETC_MOUNT="$(df -P "$HOSTFILE" | awk 'NR==2 { print $6 }')"
+ETC_MOUNT="$($B df -P "$HOSTFILE" | $B awk 'NR==2 { print $6 }')"
+
 
 #################################################
 set -e
@@ -37,18 +40,18 @@ set -e
 echo "starting adfree v${VERSION}..."
 
 is_rw() {
-    awk -vD="$ETC_MOUNT" '$2 == D && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
+    $B awk -vD="$ETC_MOUNT" '$2 == D && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
 }
 
 REMOUNTED=0
-is_rw || { mount "$ETC_MOUNT" -o remount,rw; REMOUNTED=1; }
+is_rw || { $B mount "$ETC_MOUNT" -o remount,rw; REMOUNTED=1; }
 
 # better be safe than sorry...
 is_rw || { echo "Unable to gain write access to $ETC_MOUNT, aborting" >&2; exit 1; }
 
 # remove old adfree entries
 echo "Removing ADFREE entries from $HOSTFILE"
-sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
+$B sed -i '/^### ADFREE DATA BEGIN ###$/,/^### ADFREE DATA END ###$/ d' "$HOSTFILE"
 
 if [ "$REMOVE_ONLY" -ne 1 ]; then
     echo "Adding new ADFREE entries to $HOSTFILE"
@@ -63,13 +66,13 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
 
         echo -e "\n# entries retrieved from $URL"
 
-        wget -O- "$URL" 2>&3
+        $B wget -O- "$URL" 2>&3
 
         echo "### ADFREE DATA END ###"
     } 3>&1 >> "$HOSTFILE"
 fi
 
 # mount directory read-only if it was at the beginning
-[ "$REMOUNTED" -eq 1 ] && mount "$ETC_MOUNT" -o remount,ro
+[ "$REMOUNTED" -eq 1 ] && $B mount "$ETC_MOUNT" -o remount,ro
 
 echo "done."
