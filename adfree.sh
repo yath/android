@@ -17,7 +17,7 @@ IPADDR="127.0.0.99"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
 ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com"
 
-VERSION="0.23"
+VERSION="0.23.5"
 
 REMOVE_ONLY=0
 
