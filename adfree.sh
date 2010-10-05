@@ -31,6 +31,7 @@ HOSTFILE=${1:-/etc/hosts}
 RESOLVCONF="/etc/resolv.conf"
 
 B="busybox"
+BUSYBOX_PACKAGE="stericson.busybox"
 
 # detect mountpoint of the host file
 ETC_MOUNT="$($B df -P "$HOSTFILE" | $B awk 'NR==2 { print $6 }')"
@@ -45,6 +46,15 @@ is_rw() {
     $B awk -vD="$ETC_MOUNT" '$2 == D && $4 ~/(^|,)rw(,|$)/ {RW=1} END{exit ! RW}' /proc/mounts
 }
 
+check_busybox() {
+    if ! $B true; then
+        echo "You don't seem to have $B installed. Redirecting you to the market in 2s..." >&2
+        sleep 2
+        am start -d "market://details?id=${BUSYBOX_PACKAGE}" ACTION_VIEW
+        exit 1
+    fi
+}
+
 check_resolvconf() {
     [ -e "$RESOLVCONF" ] && return
     i=1
@@ -56,6 +66,8 @@ check_resolvconf() {
         i=$((i+1))
     done
 }
+
+check_busybox
 
 REMOUNTED=0
 is_rw || { $B mount "$ETC_MOUNT" -o remount,rw; REMOUNTED=1; }
