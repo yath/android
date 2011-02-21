@@ -14,6 +14,8 @@
 
 
 IPADDR="127.0.0.99"
+# descriptive name for reverse lookup
+DESCR="blocked.by.adfree.hosts.file.example"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
 ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com"
 
@@ -87,6 +89,11 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
         # print new ADFREE header
         echo "### ADFREE DATA BEGIN ###"
         echo "# last adfree v$VERSION run: $(date)"
+        # print the first entry with an descriptive hostname
+        # to capture the reverse lookup
+        if [ -n "$DESCR" ]; then
+            echo "$IPADDR $DESCR"
+        fi
 
         for host in $ALSO; do
             echo "$IPADDR $host"
