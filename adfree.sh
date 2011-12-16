@@ -77,6 +77,7 @@ is_rw || { $B mount "$ETC_MOUNT" -o remount,rw; REMOUNTED=1; }
 # better be safe than sorry...
 is_rw || { echo "Unable to gain write access to $ETC_MOUNT, aborting" >&2; exit 1; }
 
+RESOLVCONF_CREATED=0
 check_resolvconf
 
 # remove old adfree entries
