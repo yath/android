@@ -17,9 +17,9 @@ IPADDR="127.0.0.99"
 # descriptive name for reverse lookup
 DESCR="blocked.by.adfree.hosts.file.example"
 URL="http://pgl.yoyo.org/adservers/serverlist.php?showintro=0;hostformat=hosts;mimetype=plaintext;useip=$IPADDR"
-ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com my.mobfox.com data.flurry.com"
+ALSO="r.admob.com dev.dolphin-browser.com ads.aapl.shazamid.com my.mobfox.com data.flurry.com googleads.g.doubleclick.net pubads.g.doubleclick.net googleads.g.doubleclick.net e.admob.com media.admob.com"
 
-VERSION="0.23.5"
+VERSION="0.23.6"
 
 REMOVE_ONLY=0
 
