@@ -108,9 +108,9 @@ if [ "$REMOVE_ONLY" -ne 1 ]; then
     } 3>&1 >> "$HOSTFILE"
 fi
 
+[ "$RESOLVCONF_CREATED" -eq 1 ] && rm "$RESOLVCONF"
+
 # mount directory read-only if it was at the beginning
 [ "$REMOUNTED" -eq 1 ] && $B mount "$ETC_MOUNT" -o remount,ro
-
-[ "$RESOLVCONF_CREATED" -eq 1 ] && rm "$RESOLVCONF"
 
 echo "done."
